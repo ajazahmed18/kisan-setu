@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Allow Admin Portal access when authenticated as admin@gmail.com or has record in admins collection
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'admin@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && (request.auth.uid == userId || userId.matches('^fallback_user_.*'));
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      // Allow reading user profiles
+      allow read: if true;
+
+      // Users can register/create their own profile
+      allow create: if isSignedIn() && (request.auth.uid == userId || userId.matches('^fallback_user_.*') || isAdmin());
+
+      // Users can update their own profile; Admins can update any profile
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin() || userId.matches('^fallback_user_.*'));
+
+      // Only admin can delete accounts; admin account is protected from deletion
+      allow delete: if isAdmin() && resource.data.email != 'admin@gmail.com';
+    }
+
+    // App Queries & Help Desk (Received by Admin)
+    match /app_queries/{queryId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Disputes Collection
+    match /disputes/{disputeId} {
+      allow read: if true;
+      allow create: if isSignedIn() || true;
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.raisedBy == request.auth.uid);
+    }
+
+    // Admin-Only Collections
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+    match /admin_audit_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+    match /admin_settings/{settingId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Crop Lots Marketplace
+    match /crop_lots/{lotId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(lotId);
+      allow update: if isSignedIn() && isValidId(lotId);
+      allow delete: if isSignedIn() && (isAdmin() || resource.data.farmerId == request.auth.uid);
+    }
+
+    // Buyer Offers
+    match /buyer_offers/{offerId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(offerId);
+      allow update: if isSignedIn() && isValidId(offerId);
+      allow delete: if isSignedIn() && (isAdmin() || resource.data.buyerId == request.auth.uid);
+    }
+
+    // Escrow Orders
+    match /orders/{orderId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(orderId);
+      allow update: if isSignedIn() && isValidId(orderId);
+      allow delete: if isAdmin();
+    }
+
+    // Sell Requests & FPO Field Operations
+    match /sell_requests/{requestId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(requestId);
+      allow update: if isSignedIn() && isValidId(requestId);
+      allow delete: if isAdmin();
+    }
+
+    // Community Feed & Problem Queries
+    match /community_posts/{postId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(postId);
+      allow update: if isSignedIn() && isValidId(postId);
+      allow delete: if isSignedIn() && (isAdmin() || resource.data.farmerId == request.auth.uid);
+    }
+
+    // Follower / Following Social Graph
+    match /follows/{followId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidId(followId) && request.resource.data.followerId == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.followerId == request.auth.uid || isAdmin());
+    }
+
+    // Health check / connection test document
+    match /test/{docId} {
+      allow read: if true;
+    }
+  }
+}

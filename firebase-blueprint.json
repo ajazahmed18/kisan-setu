@@ -1,0 +1,184 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile document storing authenticated user details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "phoneNumber": { "type": "string", "maxLength": 32 },
+        "photoURL": { "type": "string", "maxLength": 1024 },
+        "provider": { "type": "string", "maxLength": 64 },
+        "role": { "type": "string", "enum": ["farmer", "fpo", "market", "transporter", "admin"], "maxLength": 32 },
+        "isOnline": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["online", "offline"], "maxLength": 16 },
+        "lastActive": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "lastLoginAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["uid"]
+    },
+    "CropLot": {
+      "title": "CropLot",
+      "description": "Agricultural crop harvest lot listed by farmers or aggregated by FPOs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "farmerId": { "type": "string", "maxLength": 128 },
+        "farmerName": { "type": "string", "maxLength": 128 },
+        "farmerPhone": { "type": "string", "maxLength": 32 },
+        "crop": { "type": "string", "maxLength": 64 },
+        "variety": { "type": "string", "maxLength": 128 },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 16 },
+        "qualityGrade": { "type": "string", "maxLength": 16 },
+        "moisture": { "type": "number" },
+        "harvestDate": { "type": "string", "maxLength": 32 },
+        "expectedPrice": { "type": "number" },
+        "location": { "type": "string", "maxLength": 256 },
+        "imageUrl": { "type": "string", "maxLength": 1024 },
+        "status": { "type": "string", "enum": ["available", "negotiation", "locked", "sold"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "farmerId", "farmerName", "crop", "quantity", "unit", "expectedPrice", "status"]
+    },
+    "BuyerOffer": {
+      "title": "BuyerOffer",
+      "description": "Bids and commercial purchase offers made by verified institutional buyers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "lotId": { "type": "string", "maxLength": 128 },
+        "crop": { "type": "string", "maxLength": 64 },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 16 },
+        "farmerId": { "type": "string", "maxLength": 128 },
+        "farmerName": { "type": "string", "maxLength": 128 },
+        "farmerPhone": { "type": "string", "maxLength": 32 },
+        "buyerId": { "type": "string", "maxLength": 128 },
+        "buyerName": { "type": "string", "maxLength": 128 },
+        "buyerCompany": { "type": "string", "maxLength": 256 },
+        "offeredPrice": { "type": "number" },
+        "counterPrice": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "countered", "rejected"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "lotId", "farmerId", "buyerId", "offeredPrice", "status"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Escrow smart contract order locking farm produce and payments until delivery",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "lotId": { "type": "string", "maxLength": 128 },
+        "crop": { "type": "string", "maxLength": 64 },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 16 },
+        "totalAmount": { "type": "number" },
+        "farmerId": { "type": "string", "maxLength": 128 },
+        "buyerId": { "type": "string", "maxLength": 128 },
+        "status": { "type": "string", "enum": ["Escrow Funded", "In Transit", "Delivered & Inspected", "Completed", "Disputed"] },
+        "paymentStatus": { "type": "string", "enum": ["Escrow Deposited", "Pending Release", "Released to Farmer"] },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "lotId", "farmerId", "buyerId", "totalAmount", "status"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "Agronomic advice, farmer queries, problem posts, and peer-to-peer Q&A exchange",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "farmerId": { "type": "string", "maxLength": 128 },
+        "farmerName": { "type": "string", "maxLength": 128 },
+        "farmerRole": { "type": "string", "maxLength": 32 },
+        "farmerLocation": { "type": "string", "maxLength": 256 },
+        "farmerPhone": { "type": "string", "maxLength": 32 },
+        "crop": { "type": "string", "maxLength": 64 },
+        "problemCategory": { "type": "string", "maxLength": 64 },
+        "urgency": { "type": "string", "maxLength": 32 },
+        "title": { "type": "string", "maxLength": 256 },
+        "question": { "type": "string", "maxLength": 4096 },
+        "imageUrl": { "type": "string", "maxLength": 1024 },
+        "status": { "type": "string", "maxLength": 32 },
+        "resolvedReplyId": { "type": "string", "maxLength": 128 },
+        "likes": { "type": "array" },
+        "replies": { "type": "array" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "farmerName", "title", "question"]
+    },
+    "Follow": {
+      "title": "Follow",
+      "description": "Social follower/following graph relation connecting users and farmers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "followerId": { "type": "string", "maxLength": 128 },
+        "followerName": { "type": "string", "maxLength": 128 },
+        "followingId": { "type": "string", "maxLength": 128 },
+        "followingName": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "followerId", "followingId"]
+    },
+    "SellRequest": {
+      "title": "SellRequest",
+      "description": "Sell request initiated by seller, assigned to FPO officer for field inspection, price negotiation, transport, and 97%/2%/1% commission settlement",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "sellerId": { "type": "string", "maxLength": 128 },
+        "sellerName": { "type": "string", "maxLength": 128 },
+        "sellerPhone": { "type": "string", "maxLength": 32 },
+        "crop": { "type": "string", "maxLength": 64 },
+        "variety": { "type": "string", "maxLength": 128 },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 16 },
+        "expectedPricePerUnit": { "type": "number" },
+        "expectedTotalAmount": { "type": "number" },
+        "status": { "type": "string", "maxLength": 32 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "sellerId", "crop", "quantity", "expectedPricePerUnit", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles indexed by Firebase Auth UID"
+    },
+    "/crop_lots/{lotId}": {
+      "schema": "CropLot",
+      "description": "Harvest lots posted by farmers and aggregators"
+    },
+    "/buyer_offers/{offerId}": {
+      "schema": "BuyerOffer",
+      "description": "Commercial offers submitted by verified buyers"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Escrow orders tracking fulfillment and settlements"
+    },
+    "/sell_requests/{requestId}": {
+      "schema": "SellRequest",
+      "description": "Field sell requests tracking FPO officer physical inspection, negotiated price, logistics, and commission split"
+    },
+    "/admins/{adminId}": {
+      "schema": "UserProfile",
+      "description": "Exclusive platform custodian records for kisanadmin@gmail.com"
+    },
+    "/community_posts/{postId}": {
+      "schema": "CommunityPost",
+      "description": "Rythu Mitra public farmer community feed posts"
+    },
+    "/follows/{followId}": {
+      "schema": "Follow",
+      "description": "User follower and following relationships"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Remix Copy of Remix Remix Remix Remix KisanSetu - Smart Agricultural Market Linkage",
+  "description": "Smart agricultural market linkage and price discovery platform connecting farmers, FPOs, verified buyers, and transporters with AI intelligence, logistics, and voice access.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

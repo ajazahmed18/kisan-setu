@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@layer base {
+  :root {
+    --canvas-bg: #f8fafc;
+    --surface-card: #ffffff;
+    --border-subtle: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+  }
+
+  * {
+    border-color: #e2e8f0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0f172a;
+    background-color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  /* Monospace for numbers, currency, IDs, hashes, timestamps */
+  .font-mono, [data-mono="true"] {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+/* Clean utility custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Subtle CSS scale-on-hover interactive dashboard cards */
+.dashboard-card-hover {
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 220ms ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.dashboard-card-hover:hover {
+  transform: translateY(-2.5px) scale(1.015);
+  box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+  border-color: #cbd5e1;
+}
+
+/* Metric & KPI Stat Card subtle scale on hover */
+.stat-card-hover {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 200ms ease,
+              background-color 200ms ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.stat-card-hover:hover {
+  transform: translateY(-2px) scale(1.025);
+  box-shadow: 0 8px 18px -4px rgba(15, 23, 42, 0.07);
+  border-color: #cbd5e1;
+  background-color: #ffffff;
+}
+
+/* Feature Pillar Card subtle scale on hover */
+.feature-card-hover {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 240ms ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.feature-card-hover:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.09), 0 6px 12px -3px rgba(15, 23, 42, 0.04);
+  border-color: #94a3b8;
+}
+
+/* Compact list item row card scale-on-hover */
+.row-card-hover {
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 180ms ease,
+              background-color 180ms ease;
+  will-change: transform;
+}
+
+.row-card-hover:hover {
+  transform: scale(1.008);
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+}
+
+/* Accessibility: respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-card-hover,
+  .stat-card-hover,
+  .feature-card-hover,
+  .row-card-hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
